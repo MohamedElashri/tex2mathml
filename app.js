@@ -103,7 +103,6 @@ document.addEventListener('DOMContentLoaded', () => {
       containerWidth: 80 * 16,
       lineWidth: 1000,
       scale: 1,
-      output: 'mathml',
     };
 
     MathJax.texReset();
