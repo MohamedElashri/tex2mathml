@@ -1,0 +1,131 @@
+body {
+  font-family: Arial, sans-serif;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #24292e;
+  color: #ffffff;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+header h1 a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.page-content {
+  flex: 1;
+}
+
+main {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: nowrap;
+}
+
+section {
+  flex: 1;
+  margin: 0 10px;
+  background-color: #3f3f3f;
+  border-radius: 6px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.CodeMirror {
+  height: 300px;
+}
+
+.CodeMirror-scroll {
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.CodeMirror pre {
+  padding: 0 4px;
+}
+
+.CodeMirror-lines {
+  padding: 0 4px;
+}
+
+textarea {
+  width: 100%;
+  resize: none;
+  background-color: #323232;
+  color: #ffffff;
+  border: 1px solid #434343;
+}
+
+button {
+  margin-top: 10px;
+  background-color: #3f3f3f;
+  border: 1px solid #434343;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+button:hover {
+  background-color: #4f4f4f;
+}
+
+button:not(:last-child) {
+  margin-right: 10px;
+}
+
+footer {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #ffffff;
+  padding: 10px 0;
+  background-color: #3f3f3f;
+  border-top: 1px solid #434343;
+}
+
+#convertBtn {
+  display: inline-block;
+  padding: 10px;
+  border-radius: 6px;
+  background-color: #4CAF50;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#convertBtn:hover {
+  background-color: #3e8e41;
+}
+
+.copy-btn {
+  margin-left: 10px;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #ffffff;
+  background-color: #337ab7;
+  border-color: #2e6da4;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.copy-btn:hover {
+  color: #ffffff;
+  background-color: #286090;
+  border-color: #204d74;
+}
+
+.copy-btn i {
+  margin-right: 5px;
+}
