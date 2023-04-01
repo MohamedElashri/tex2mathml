@@ -1,12 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+   
+    <!-- This code sets the character encoding for the document to UTF-8 -->
     <meta charset="UTF-8" />
+    <!--This code makes the site responsive.-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--This code sets the title of the document.-->
     <title>LaTeX to MathML Converter</title>
+    <!-- Codemirror is a JavaScript library that provides us with a text editor with syntax highlighting . -->
     <link rel="stylesheet" href="css/codemirror.min.css" />
+    <!-- This is the stylesheet for the editor -->
     <link rel="stylesheet" href="css/material-darker.min.css" />
+    <!-- This is the main stylesheet for the site -->
     <link rel="stylesheet" href="css/styles.css" />
+    <!-- This is MathJS js file that we use to convert from LaTeX to MathML -->
     <script type="text/javascript" async src="js/tex-mml-chtml.js"></script>
     <link rel="stylesheet" href="css/all.min.css" />
   </head>
@@ -32,9 +40,13 @@
       </main>
       <footer>&copy; 2023 Mohamed Elashri - LaTeX to MathML Converter</footer>
     </div>
+     <!-- Codemirror is a JavaScript library that provides us with a text editor with syntax highlighting. He we import the library js file -->
     <script src="js/codemirror.min.js"></script>
+    <!-- This is language model for latex (input) -->
     <script src="js/stex.min.js"></script>
+    <!-- This is language model for xml (output) -->
     <script src="js/xml.min.js"></script>
+    <!-- This is our main app file that contain the code to do the conversion and some other functions -->
     <script src="js/app.js"></script>
   </body>
 </html>
