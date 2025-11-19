@@ -34,25 +34,28 @@
         <section>
           <h2>LaTeX</h2>
           <textarea id="latexInput" class="code-mirror" rows="10" cols="50" placeholder="Enter your LaTeX code here..."></textarea>
-          <button id="convertBtn">Convert to MathML</button>
         </section>
 
         <!-- Output section for MathML code -->
         <section>
           <div class="output-header">
             <h2>Output</h2>
-            <div class="display-mode-selector">
-              <label for="outputMode">Display as:</label>
-              <select id="outputMode" class="mode-dropdown">
-                <option value="math">Math</option>
-                <option value="mathml">MathML</option>
-                <option value="flat">Flat MathML</option>
-              </select>
+            <div class="output-controls">
+              <div class="display-mode-selector">
+                <label for="outputMode">Display as:</label>
+                <select id="outputMode" class="mode-dropdown">
+                  <option value="math">Math</option>
+                  <option value="mathml">MathML</option>
+                  <option value="flat">Flat MathML</option>
+                </select>
+              </div>
+              <button id="copyBtn" class="copy-icon-btn" title="Copy to clipboard">
+                <i class="far fa-copy"></i>
+              </button>
             </div>
           </div>
           <div id="mathPreview" class="math-preview"></div>
           <textarea id="mathmlOutput" class="code-mirror" rows="10" cols="50" readonly></textarea>
-          <button id="copyBtn" class="copy-btn"><i class="far fa-clipboard"></i> Copy to clipboard</button>
         </section>
       </main>
       <footer>&copy; 2025 Mohamed Elashri - LaTeX to MathML Converter</footer>

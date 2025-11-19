@@ -42,8 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
     lineWrapping: true,
   });
 
-  // Get the convert and copy buttons from the HTML
-  const convertBtn = document.getElementById("convertBtn");
+  // Get the copy button from the HTML
   const copyBtn = document.getElementById("copyBtn");
   const mathPreview = document.getElementById("mathPreview");
   const outputModeSelect = document.getElementById("outputMode");
@@ -51,6 +50,51 @@ document.addEventListener("DOMContentLoaded", () => {
   // Store the current MathML and LaTeX
   let currentMathML = "";
   let currentLatex = "";
+  
+  // Debounce timer for auto-conversion
+  let conversionTimer = null;
+  
+  // Function to perform conversion
+  function performConversion() {
+    const latex = editor.getValue().trim();
+    
+    if (!latex) {
+      // Clear output if input is empty
+      currentMathML = "";
+      currentLatex = "";
+      mathPreview.innerHTML = "";
+      outputEditor.setValue("");
+      return;
+    }
+
+    try {
+      const mathml = getMathML(latex);
+      currentMathML = mathml;
+      currentLatex = latex;
+      
+      // Update display based on selected mode
+      updateDisplay(getSelectedMode());
+    } catch (error) {
+      console.error("Error converting LaTeX to MathML:", error);
+      // Show error in preview
+      mathPreview.innerHTML = '<span style="color: #ff6b6b;">Error: ' + error.message + '</span>';
+      mathPreview.classList.add('active');
+      outputEditor.getWrapperElement().style.display = 'none';
+    }
+  }
+  
+  // Add auto-conversion on input change with debounce
+  editor.on("change", () => {
+    // Clear previous timer
+    if (conversionTimer) {
+      clearTimeout(conversionTimer);
+    }
+    
+    // Set new timer for 500ms delay
+    conversionTimer = setTimeout(() => {
+      performConversion();
+    }, 500);
+  });
   
   // Function to format MathML with proper indentation (inspired by tex repo)
   function formatMathML(mathml) {
@@ -114,7 +158,8 @@ document.addEventListener("DOMContentLoaded", () => {
         mathPreview.innerHTML = '';
         try {
           temml.render(currentLatex, mathPreview, {
-            displayMode: true
+            displayMode: true,
+            trust: true
           });
           // Post-process for proper display
           if (temml.postProcess) {
@@ -151,38 +196,6 @@ document.addEventListener("DOMContentLoaded", () => {
   function getSelectedMode() {
     return outputModeSelect.value;
   }
-
-  // Add event listener to convert button to call getMathML function
-  convertBtn.addEventListener("click", () => {
-    const latex = editor.getValue().trim();
-
-    if (!latex) {
-      alert("Please enter a LaTeX expression to convert.");
-      return;
-    }
-
-    // Disable button during conversion
-    convertBtn.disabled = true;
-    convertBtn.textContent = "Converting...";
-
-    try {
-      const mathml = getMathML(latex);
-      currentMathML = mathml;
-      currentLatex = latex;
-      
-      // Update display based on selected mode
-      updateDisplay(getSelectedMode());
-    } catch (error) {
-      console.error("Error converting LaTeX to MathML:", error);
-      alert(
-        "An error occurred while converting LaTeX to MathML. Please check your input and try again. Error: " + error.message
-      );
-    } finally {
-      // Re-enable button
-      convertBtn.disabled = false;
-      convertBtn.textContent = "Convert to MathML";
-    }
-  });
 
   /*
   Funtion to sanitize user input to prevent XSS attacks.
@@ -240,16 +253,18 @@ document.addEventListener("DOMContentLoaded", () => {
   */
 
     function getMathML(latex) {
-    const sanitizedInput = sanitizeInput(latex);
-
+    // Don't sanitize input for Temml - it handles LaTeX safely
+    // and sanitization breaks LaTeX commands
+    
     // Ensure Temml is loaded
     if (typeof temml === 'undefined') {
       throw new Error('Temml library is not loaded');
     }
 
     // Use Temml to convert LaTeX to MathML
-    const mathml = temml.renderToString(sanitizedInput, {
-      displayMode: false
+    const mathml = temml.renderToString(latex, {
+      displayMode: true,
+      trust: true
     });
     
     return mathml;
@@ -277,7 +292,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     
     if (!contentToCopy) {
-      alert("No content to copy. Please convert LaTeX first.");
+      // Show brief tooltip feedback
+      copyBtn.innerHTML = '<i class="fas fa-exclamation"></i>';
+      setTimeout(() => {
+        copyBtn.innerHTML = '<i class="far fa-copy"></i>';
+      }, 1000);
       return;
     }
 
@@ -285,18 +304,24 @@ document.addEventListener("DOMContentLoaded", () => {
       // Use modern Clipboard API
       await navigator.clipboard.writeText(contentToCopy);
       
-      // Visual feedback
-      const originalText = copyBtn.innerHTML;
-      copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
-      copyBtn.style.backgroundColor = '#28a745';
+      // Visual feedback with icon change
+      const originalIcon = copyBtn.innerHTML;
+      copyBtn.innerHTML = '<i class="fas fa-check"></i>';
+      copyBtn.style.background = 'linear-gradient(135deg, #28a745 0%, #218838 100%)';
       
       setTimeout(() => {
-        copyBtn.innerHTML = originalText;
-        copyBtn.style.backgroundColor = '';
-      }, 2000);
+        copyBtn.innerHTML = originalIcon;
+        copyBtn.style.background = '';
+      }, 1500);
     } catch (err) {
       console.error('Failed to copy:', err);
-      alert("Failed to copy to clipboard.");
+      // Show error icon briefly
+      copyBtn.innerHTML = '<i class="fas fa-times"></i>';
+      copyBtn.style.background = 'linear-gradient(135deg, #dc3545 0%, #c82333 100%)';
+      setTimeout(() => {
+        copyBtn.innerHTML = '<i class="far fa-copy"></i>';
+        copyBtn.style.background = '';
+      }, 1500);
     }
   });
 });
