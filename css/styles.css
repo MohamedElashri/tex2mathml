@@ -1,23 +1,40 @@
 body {
-  font-family: Arial, sans-serif;
-  max-width: 960px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #24292e;
-  color: #ffffff;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  color: #e0e0e0;
 }
 
 header {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
+  padding: 20px 0;
+  border-bottom: 2px solid #404040;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 2.2em;
+  font-weight: 700;
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 1px;
 }
 
 header h1 a {
   text-decoration: none;
   color: inherit;
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .page-content {
@@ -34,19 +51,156 @@ main {
 section {
   flex: 1;
   margin: 0 10px;
-  background-color: #3f3f3f;
+  background-color: #2d2d2d;
+  border-radius: 8px;
+  padding: 25px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2);
+  border: 1px solid #404040;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+section:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4), 0 3px 6px rgba(0, 0, 0, 0.25);
+  border-color: #4a4a4a;
+}
+
+section h2 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 1.3em;
+  color: #4CAF50;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.output-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.output-header h2 {
+  margin: 0;
+}
+
+.display-mode-selector {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.display-mode-selector label {
+  font-size: 14px;
+  color: #ffffff;
+}
+
+.mode-dropdown {
+  padding: 6px 12px;
+  font-size: 14px;
+  color: #ffffff;
+  background-color: #2a2a2a;
+  border: 1px solid #434343;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.mode-dropdown:hover {
+  background-color: #323232;
+  border-color: #4CAF50;
+}
+
+.mode-dropdown:focus {
+  outline: none;
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+.math-preview {
+  display: none;
+  background-color: #1e1e1e;
+  border: 1px solid #404040;
   border-radius: 6px;
-  padding: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 35px;
+  margin-bottom: 15px;
+  min-height: 140px;
+  overflow-x: auto;
+  text-align: center;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.math-preview.active {
+  display: block;
+}
+
+/* Native MathML styling - browsers render this beautifully! */
+.math-preview math {
+  font-size: 1.3em;
+  color: #ffffff;
+  line-height: 1.6;
+}
+
+/* Improve spacing for display math */
+.math-preview math[display="block"] {
+  margin: 20px auto;
+  display: block;
+}
+
+/* Better rendering for nested math elements */
+.math-preview mrow {
+  padding: 0.3ex 0;
+}
+
+.math-preview mfrac {
+  margin: 0 0.2em;
+}
+
+.math-preview msub,
+.math-preview msup {
+  margin: 0 0.1em;
+}
+
+/* Improve operator spacing */
+.math-preview mo {
+  margin: 0 0.2em;
+}
+
+/* Legacy MathJax container support (if needed) */
+.math-preview mjx-container {
+  margin: 15px 0;
+  font-size: 1.4em !important;
+}
+
+.math-preview mjx-container mjx-math {
+  font-family: "STIX Two Math", "Latin Modern Math", "Cambria Math", serif !important;
+}
+
+/* Improve MathJax rendering quality */
+mjx-container {
+  line-height: 1.5 !important;
+}
+
+mjx-container svg {
+  vertical-align: middle;
 }
 
 .CodeMirror {
-  height: 300px;
+  height: 350px;
+  width: 100%;
+  max-width: 100%;
+  border-radius: 6px;
+  border: 1px solid #404040;
+  font-size: 14px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .CodeMirror-scroll {
   overflow-y: scroll;
-  overflow-x: hidden;
+  overflow-x: auto;
+  max-width: 100%;
 }
 
 .CodeMirror pre {
@@ -67,15 +221,18 @@ textarea {
 
 button {
   margin-top: 10px;
-  background-color: #3f3f3f;
-  border: 1px solid #434343;
+  background-color: #404040;
+  border: 1px solid #4a4a4a;
   color: #ffffff;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.3s ease;
+  border-radius: 5px;
+  padding: 8px 16px;
 }
 
 button:hover {
-  background-color: #4f4f4f;
+  background-color: #4a4a4a;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
 button:not(:last-child) {
@@ -84,48 +241,72 @@ button:not(:last-child) {
 
 footer {
   text-align: center;
-  margin-top: 20px;
+  margin-top: 30px;
   font-size: 14px;
-  color: #ffffff;
-  padding: 10px 0;
-  background-color: #3f3f3f;
-  border-top: 1px solid #434343;
+  color: #b0b0b0;
+  padding: 20px 0;
+  background-color: transparent;
+  border-top: 1px solid #404040;
 }
 
 #convertBtn {
   display: inline-block;
-  padding: 10px;
+  padding: 12px 24px;
+  margin-top: 15px;
   border-radius: 6px;
-  background-color: #4CAF50;
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
   color: white;
   font-size: 16px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
+  border: none;
+  box-shadow: 0 3px 8px rgba(76, 175, 80, 0.3);
 }
 
 #convertBtn:hover {
-  background-color: #3e8e41;
+  background: linear-gradient(135deg, #45a049 0%, #3d8b40 100%);
+  box-shadow: 0 5px 12px rgba(76, 175, 80, 0.4);
+  transform: translateY(-1px);
+}
+
+#convertBtn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(76, 175, 80, 0.3);
+}
+
+#convertBtn:disabled {
+  background: linear-gradient(135deg, #666 0%, #555 100%);
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
 }
 
 .copy-btn {
-  margin-left: 10px;
-  padding: 6px 12px;
+  margin-top: 15px;
+  padding: 8px 16px;
   font-size: 14px;
   line-height: 1.42857143;
   color: #ffffff;
-  background-color: #337ab7;
-  border-color: #2e6da4;
-  border-radius: 4px;
+  background: linear-gradient(135deg, #337ab7 0%, #2e6da4 100%);
+  border: none;
+  border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.2s, color 0.2s;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(51, 122, 183, 0.3);
 }
 
 .copy-btn:hover {
-  color: #ffffff;
-  background-color: #286090;
-  border-color: #204d74;
+  background: linear-gradient(135deg, #2e6da4 0%, #286090 100%);
+  box-shadow: 0 4px 10px rgba(51, 122, 183, 0.4);
+  transform: translateY(-1px);
+}
+
+.copy-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 3px rgba(51, 122, 183, 0.3);
 }
 
 .copy-btn i {
-  margin-right: 5px;
+  margin-right: 6px;
 }

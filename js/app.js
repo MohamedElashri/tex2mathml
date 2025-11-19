@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
     autoCloseBrackets: true,
     matchBrackets: true,
     theme: "material-darker",
+    lineWrapping: true,
   });
 
   /*
@@ -38,14 +39,121 @@ document.addEventListener("DOMContentLoaded", () => {
     lineNumbers: true,
     readOnly: true,
     theme: "material-darker",
+    lineWrapping: true,
   });
 
   // Get the convert and copy buttons from the HTML
   const convertBtn = document.getElementById("convertBtn");
   const copyBtn = document.getElementById("copyBtn");
+  const mathPreview = document.getElementById("mathPreview");
+  const outputModeSelect = document.getElementById("outputMode");
+  
+  // Store the current MathML and LaTeX
+  let currentMathML = "";
+  let currentLatex = "";
+  
+  // Function to format MathML with proper indentation (inspired by tex repo)
+  function formatMathML(mathml) {
+    try {
+      // Basic formatting with proper indentation
+      let formatted = mathml;
+      let indent = 0;
+      const lines = [];
+      
+      // Simple tag-based formatting
+      formatted = formatted.replace(/></g, '>\n<');
+      const parts = formatted.split('\n');
+      
+      parts.forEach(part => {
+        const trimmed = part.trim();
+        if (!trimmed) return;
+        
+        // Decrease indent for closing tags
+        if (trimmed.startsWith('</')) {
+          indent = Math.max(0, indent - 1);
+        }
+        
+        // Add the line with proper indentation
+        lines.push('  '.repeat(indent) + trimmed);
+        
+        // Increase indent for opening tags (but not self-closing)
+        if (trimmed.startsWith('<') && !trimmed.startsWith('</') && !trimmed.endsWith('/>')) {
+          // Check if it's not immediately closed on the same line
+          const tagName = trimmed.match(/<(\w+)/);
+          if (tagName && !trimmed.includes('</' + tagName[1] + '>')) {
+            indent++;
+          }
+        }
+      });
+      
+      return lines.join('\n');
+    } catch (e) {
+      return mathml;
+    }
+  }
+  
+  // Function to flatten MathML (remove all whitespace and newlines)
+  function flattenMathML(mathml) {
+    return mathml.replace(/>\s+</g, '><').replace(/\n/g, '').trim();
+  }
+  
+  // Function to update display based on selected mode
+  function updateDisplay(mode) {
+    if (!currentMathML) return;
+    
+    // Hide/show appropriate containers
+    const codemirrorWrapper = outputEditor.getWrapperElement();
+    
+    switch(mode) {
+      case 'math':
+        // Show rendered math, hide code editor
+        mathPreview.classList.add('active');
+        codemirrorWrapper.style.display = 'none';
+        
+        // Use Temml to render directly to the preview (like tex repo)
+        mathPreview.innerHTML = '';
+        try {
+          temml.render(currentLatex, mathPreview, {
+            displayMode: true
+          });
+          // Post-process for proper display
+          if (temml.postProcess) {
+            temml.postProcess(mathPreview);
+          }
+        } catch (err) {
+          console.error('Temml render error:', err);
+          mathPreview.innerHTML = '<span style="color: #ff6b6b;">Error rendering math: ' + err.message + '</span>';
+        }
+        break;
+        
+      case 'mathml':
+        // Show formatted MathML in editor
+        mathPreview.classList.remove('active');
+        codemirrorWrapper.style.display = 'block';
+        outputEditor.setValue(formatMathML(currentMathML));
+        break;
+        
+      case 'flat':
+        // Show flat MathML in editor
+        mathPreview.classList.remove('active');
+        codemirrorWrapper.style.display = 'block';
+        outputEditor.setValue(flattenMathML(currentMathML));
+        break;
+    }
+  }
+  
+  // Add event listener to dropdown
+  outputModeSelect.addEventListener('change', (e) => {
+    updateDisplay(e.target.value);
+  });
+  
+  // Get currently selected display mode
+  function getSelectedMode() {
+    return outputModeSelect.value;
+  }
 
   // Add event listener to convert button to call getMathML function
-  convertBtn.addEventListener("click", async () => {
+  convertBtn.addEventListener("click", () => {
     const latex = editor.getValue().trim();
 
     if (!latex) {
@@ -53,14 +161,26 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    // Disable button during conversion
+    convertBtn.disabled = true;
+    convertBtn.textContent = "Converting...";
+
     try {
-      const mathml = await getMathML(latex);
-      outputEditor.setValue(mathml);
+      const mathml = getMathML(latex);
+      currentMathML = mathml;
+      currentLatex = latex;
+      
+      // Update display based on selected mode
+      updateDisplay(getSelectedMode());
     } catch (error) {
       console.error("Error converting LaTeX to MathML:", error);
       alert(
-        "An error occurred while converting LaTeX to MathML. Please check your input and try again."
+        "An error occurred while converting LaTeX to MathML. Please check your input and try again. Error: " + error.message
       );
+    } finally {
+      // Re-enable button
+      convertBtn.disabled = false;
+      convertBtn.textContent = "Convert to MathML";
     }
   });
 
@@ -119,42 +239,64 @@ document.addEventListener("DOMContentLoaded", () => {
     compatibility with different browsers.
   */
 
-  async function getMathML(latex) {
+    function getMathML(latex) {
     const sanitizedInput = sanitizeInput(latex);
 
-    const mathJaxConfig = {
-      display: false,
-      em: 16,
-      ex: 8,
-      containerWidth: 80 * 16,
-      lineWidth: 1000,
-      scale: 1,
-    };
+    // Ensure Temml is loaded
+    if (typeof temml === 'undefined') {
+      throw new Error('Temml library is not loaded');
+    }
 
-    MathJax.texReset();
-    const output = await MathJax.tex2mmlPromise(sanitizedInput, mathJaxConfig);
-    const mathml = output.replace(
-      / xmlns="http:\/\/www.w3.org\/1998\/Math\/MathML"/g,
-      ""
-    );
+    // Use Temml to convert LaTeX to MathML
+    const mathml = temml.renderToString(sanitizedInput, {
+      displayMode: false
+    });
+    
     return mathml;
   }
 
   /*
-  The following code do the following:
-  - Selects the MathML code and copies it to the clipboard.
-  - Alerts the user that the code has been copied to the clipboard.
-  - The code is used when the "Copy" button is clicked.
-  - The "copyBtn" variable is the "Copy" button.
-  - The "mathmlOutput" variable is the div that contains the MathML code.
+  The following code copies the appropriate content based on display mode to clipboard.
+  Uses the modern Clipboard API and gets the value based on current mode.
   */
-  copyBtn.addEventListener("click", () => {
-    const range = document.createRange();
-    range.selectNode(document.getElementById("mathmlOutput"));
-    window.getSelection().removeAllRanges();
-    window.getSelection().addRange(range);
-    document.execCommand("copy");
-    window.getSelection().removeAllRanges();
-    alert("MathML code copied to clipboard.");
+  copyBtn.addEventListener("click", async () => {
+    const mode = getSelectedMode();
+    let contentToCopy = "";
+    
+    // Determine what to copy based on mode
+    switch(mode) {
+      case 'math':
+        // Copy the LaTeX code for Math mode
+        contentToCopy = currentLatex;
+        break;
+      case 'mathml':
+      case 'flat':
+        // Copy the MathML code from editor
+        contentToCopy = outputEditor.getValue();
+        break;
+    }
+    
+    if (!contentToCopy) {
+      alert("No content to copy. Please convert LaTeX first.");
+      return;
+    }
+
+    try {
+      // Use modern Clipboard API
+      await navigator.clipboard.writeText(contentToCopy);
+      
+      // Visual feedback
+      const originalText = copyBtn.innerHTML;
+      copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+      copyBtn.style.backgroundColor = '#28a745';
+      
+      setTimeout(() => {
+        copyBtn.innerHTML = originalText;
+        copyBtn.style.backgroundColor = '';
+      }, 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+      alert("Failed to copy to clipboard.");
+    }
   });
 });

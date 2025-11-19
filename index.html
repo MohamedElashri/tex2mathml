@@ -18,8 +18,10 @@
     <link rel="stylesheet" href="css/material-darker.min.css" />
     <!-- This is the main stylesheet for the site -->
     <link rel="stylesheet" href="css/styles.css" />
-    <!-- This is MathJS js file that we use to convert from LaTeX to MathML -->
-    <script type="text/javascript" async src="js/tex-mml-chtml.js"></script>
+    <!-- Temml CSS for beautiful math rendering -->
+    <link rel="stylesheet" href="css/Temml-Local.css">
+    <!-- Temml library for LaTeX to MathML conversion -->
+    <script src="js/temml.min.js"></script>
     <link rel="stylesheet" href="css/all.min.css" />
   </head>
   <body>
@@ -37,12 +39,23 @@
 
         <!-- Output section for MathML code -->
         <section>
-          <h2>MathML</h2>
+          <div class="output-header">
+            <h2>Output</h2>
+            <div class="display-mode-selector">
+              <label for="outputMode">Display as:</label>
+              <select id="outputMode" class="mode-dropdown">
+                <option value="math">Math</option>
+                <option value="mathml">MathML</option>
+                <option value="flat">Flat MathML</option>
+              </select>
+            </div>
+          </div>
+          <div id="mathPreview" class="math-preview"></div>
           <textarea id="mathmlOutput" class="code-mirror" rows="10" cols="50" readonly></textarea>
           <button id="copyBtn" class="copy-btn"><i class="far fa-clipboard"></i> Copy to clipboard</button>
         </section>
       </main>
-      <footer>&copy; 2023 Mohamed Elashri - LaTeX to MathML Converter</footer>
+      <footer>&copy; 2025 Mohamed Elashri - LaTeX to MathML Converter</footer>
     </div>
      <!-- Codemirror is a JavaScript library that provides us with a text editor with syntax highlighting. He we import the library js file -->
     <script src="js/codemirror.min.js"></script>
