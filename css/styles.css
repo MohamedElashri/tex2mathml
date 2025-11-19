@@ -1,3 +1,4 @@
+/* Dark theme (default) */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   max-width: 1200px;
@@ -8,6 +9,13 @@ body {
   min-height: 100vh;
   background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
   color: #e0e0e0;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Light theme */
+body.light-theme {
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  color: #212529;
 }
 
 header {
@@ -15,6 +23,11 @@ header {
   margin-bottom: 30px;
   padding: 20px 0;
   border-bottom: 2px solid #404040;
+  position: relative;
+}
+
+body.light-theme header {
+  border-bottom: 2px solid #e0e0e0;
 }
 
 header h1 {
@@ -37,6 +50,34 @@ header h1 a {
   background-clip: text;
 }
 
+.theme-toggle {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  border: none;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.2em;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.theme-toggle:active {
+  transform: scale(0.95);
+}
+
 .page-content {
   flex: 1;
 }
@@ -51,19 +92,16 @@ main {
 
 section {
   flex: 1;
-  background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
-  padding: 25px;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  background: transparent;
+  padding: 0;
   margin: 0 15px;
   width: 480px;
   min-width: 480px;
   max-width: 480px;
 }
 
-section:hover {
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4), 0 3px 6px rgba(0, 0, 0, 0.25);
-  border-color: #4a4a4a;
+body.light-theme section {
+  background: transparent;
 }
 
 section h2 {
@@ -75,6 +113,18 @@ section h2 {
   letter-spacing: 0.5px;
 }
 
+.input-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  min-height: 70px;
+}
+
+.input-header h2 {
+  margin: 0;
+}
+
 .output-header {
   display: flex;
   justify-content: space-between;
@@ -82,6 +132,7 @@ section h2 {
   margin-bottom: 15px;
   flex-wrap: wrap;
   gap: 15px;
+  min-height: 70px;
 }
 
 .output-header h2 {
@@ -116,8 +167,19 @@ section h2 {
   transition: background-color 0.2s, border-color 0.2s;
 }
 
+body.light-theme .mode-dropdown {
+  color: #333333;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+}
+
 .mode-dropdown:hover {
   background-color: #323232;
+  border-color: #4CAF50;
+}
+
+body.light-theme .mode-dropdown:hover {
+  background-color: #f5f5f5;
   border-color: #4CAF50;
 }
 
@@ -131,14 +193,21 @@ section h2 {
   display: none;
   background-color: #1e1e1e;
   border: 1px solid #404040;
-  border-radius: 6px;
+  border-radius: 8px;
   padding: 20px;
   margin-bottom: 0;
   height: 300px;
   overflow-x: auto;
   overflow-y: auto;
   text-align: center;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+body.light-theme .math-preview {
+  background-color: #ffffff;
+  border: 1px solid #d0d0d0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .math-preview.active {
@@ -150,6 +219,10 @@ section h2 {
   font-size: 1.3em;
   color: #ffffff;
   line-height: 1.6;
+}
+
+body.light-theme .math-preview math {
+  color: #333333;
 }
 
 /* Improve spacing for display math */
@@ -224,8 +297,8 @@ mjx-container svg {
     font-size: 13px;
   }
   
-  .CodeMirror-scroll {
-    max-height: 250px;
+  textarea {
+    min-height: 250px !important;
   }
   
   .math-preview {
@@ -244,49 +317,58 @@ mjx-container svg {
   }
 }
 
+/* CodeMirror compatibility - kept for graceful degradation if scripts still load */
 .CodeMirror {
-  height: 300px;
-  width: 100%;
-  max-width: 100%;
-  border-radius: 6px;
-  border: 1px solid #404040;
-  font-size: 14px;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-/* Make input section taller to match output section visual height */
-#latexInput + .CodeMirror {
-  height: 330px;
-}
-
-#latexInput + .CodeMirror .CodeMirror-scroll {
-  max-height: 330px;
-}
-
-.CodeMirror-scroll {
-  overflow-y: auto;
-  overflow-x: auto;
-  max-height: 300px;
-}
-
-.CodeMirror pre {
-  padding: 0 4px;
-}
-
-.CodeMirror-lines {
-  padding: 0 4px;
-}
-
-.CodeMirror-gutters {
-  border-right: 1px solid #404040;
+  display: none !important;
 }
 
 textarea {
   width: 100%;
   resize: none;
-  background-color: #323232;
-  color: #ffffff;
-  border: 1px solid #434343;
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  border: 1px solid #404040;
+  border-radius: 8px;
+  padding: 20px;
+  font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 330px;
+  transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+textarea:focus {
+  outline: none;
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2), 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+body.light-theme textarea {
+  background-color: #ffffff;
+  color: #333333;
+  border: 1px solid #d0d0d0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+body.light-theme textarea:focus {
+  background-color: #ffffff;
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2), 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Make all input/output boxes exactly the same size */
+#latexInput,
+#mathmlOutput {
+  min-height: 300px;
+  height: 300px;
+  max-height: 300px;
+}
+
+.math-preview {
+  height: 300px;
+  min-height: 300px;
+  max-height: 300px;
 }
 
 button {
@@ -334,6 +416,11 @@ footer {
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 2px 6px rgba(51, 122, 183, 0.3);
+}
+
+body.light-theme .copy-icon-btn {
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(51, 122, 183, 0.2);
 }
 
 .copy-icon-btn:hover {

@@ -1,46 +1,24 @@
 document.addEventListener("DOMContentLoaded", () => {
-  /*
-     This code creates a new instance of CodeMirror
-     The instance is stored in the variable editor
-     and it is created by calling the function CodeMirror.fromTextArea
-     The function CodeMirror.fromTextArea takes a single argument:
-     document.getElementById("latexInput")
-     The function document.getElementById takes a single argument:
-    "latexInput"
-     The argument "latexInput" is the ID of the textarea element
-     The element with the ID "latexInput" is the textarea element
-     The textarea element is where the user enters their LaTeX code
-     The textarea element is defined in the HTML file
-     The textarea element is passed as the argument to the function CodeMirror.fromTextArea
-     The function CodeMirror.fromTextArea returns a new instance of CodeMirror
-     The new instance of CodeMirror is stored in the variable editor
-     The variable editor is used to access the functionality of the new instance of CodeMirror
-    */
-  const editor = CodeMirror.fromTextArea(document.getElementById("latexInput"), {
-    mode: "stex",
-    lineNumbers: true,
-    autoCloseBrackets: true,
-    matchBrackets: true,
-    theme: "material-darker",
-    lineWrapping: true,
-  });
-
-  /*
-  The following code do the following:
-  - Set up the CodeMirror input editor
-  - Initialize the input editor to be a CodeMirror editor
-  - Set the mode to be "mathml"
-  - Set the theme to be "material-darker"
-  - Set the line numbers to be true
-  - Set the editor to be read only
-  */
-  const outputEditor = CodeMirror.fromTextArea(document.getElementById("mathmlOutput"), {
-    mode: "xml",
-    lineNumbers: true,
-    readOnly: true,
-    theme: "material-darker",
-    lineWrapping: true,
-  });
+  // Get the textarea elements directly - no CodeMirror needed
+  const latexInput = document.getElementById("latexInput");
+  const mathmlOutput = document.getElementById("mathmlOutput");
+  
+  // Simple editor interface to maintain compatibility
+  const editor = {
+    getValue: () => latexInput.value,
+    setValue: (val) => { latexInput.value = val; },
+    on: (event, callback) => {
+      if (event === "change") {
+        latexInput.addEventListener("input", callback);
+      }
+    }
+  };
+  
+  const outputEditor = {
+    getValue: () => mathmlOutput.value,
+    setValue: (val) => { mathmlOutput.value = val; },
+    getWrapperElement: () => mathmlOutput
+  };
 
   // Get the copy button from the HTML
   const copyBtn = document.getElementById("copyBtn");
@@ -146,13 +124,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!currentMathML) return;
     
     // Hide/show appropriate containers
-    const codemirrorWrapper = outputEditor.getWrapperElement();
+    const outputTextarea = outputEditor.getWrapperElement();
     
     switch(mode) {
       case 'math':
-        // Show rendered math, hide code editor
+        // Show rendered math, hide textarea
         mathPreview.classList.add('active');
-        codemirrorWrapper.style.display = 'none';
+        outputTextarea.style.display = 'none';
         
         // Use Temml to render directly to the preview (like tex repo)
         mathPreview.innerHTML = '';
@@ -172,16 +150,16 @@ document.addEventListener("DOMContentLoaded", () => {
         break;
         
       case 'mathml':
-        // Show formatted MathML in editor
+        // Show formatted MathML in textarea
         mathPreview.classList.remove('active');
-        codemirrorWrapper.style.display = 'block';
+        outputTextarea.style.display = 'block';
         outputEditor.setValue(formatMathML(currentMathML));
         break;
         
       case 'flat':
-        // Show flat MathML in editor
+        // Show flat MathML in textarea
         mathPreview.classList.remove('active');
-        codemirrorWrapper.style.display = 'block';
+        outputTextarea.style.display = 'block';
         outputEditor.setValue(flattenMathML(currentMathML));
         break;
     }
@@ -322,6 +300,32 @@ document.addEventListener("DOMContentLoaded", () => {
         copyBtn.innerHTML = '<i class="far fa-copy"></i>';
         copyBtn.style.background = '';
       }, 1500);
+    }
+  });
+
+  // Theme toggle functionality
+  const themeToggle = document.getElementById('themeToggle');
+  const body = document.body;
+  
+  // Check for saved theme preference or default to dark
+  const currentTheme = localStorage.getItem('theme') || 'dark';
+  if (currentTheme === 'light') {
+    body.classList.add('light-theme');
+    themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+  }
+  
+  // Toggle theme on button click
+  themeToggle.addEventListener('click', () => {
+    body.classList.toggle('light-theme');
+    
+    if (body.classList.contains('light-theme')) {
+      // Switch to light theme
+      themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+      localStorage.setItem('theme', 'light');
+    } else {
+      // Switch to dark theme
+      themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+      localStorage.setItem('theme', 'dark');
     }
   });
 });

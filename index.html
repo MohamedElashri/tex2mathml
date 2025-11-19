@@ -27,12 +27,17 @@
   <body>
     <header>
       <h1><a href="./index.html">LaTeX to MathML Converter</a></h1>
+      <button id="themeToggle" class="theme-toggle" title="Toggle light/dark mode">
+        <i class="fas fa-sun"></i>
+      </button>
     </header>
     <div class="page-content">
       <main>
         <!-- Input section for LaTeX code -->
         <section>
-          <h2>LaTeX</h2>
+          <div class="input-header">
+            <h2>LaTeX</h2>
+          </div>
           <textarea id="latexInput" class="code-mirror" rows="10" cols="50" placeholder="Enter your LaTeX code here..."></textarea>
         </section>
 
