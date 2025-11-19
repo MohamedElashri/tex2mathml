@@ -74,6 +74,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 500);
   });
   
+  // Perform initial conversion if there's default content
+  if (editor.getValue().trim()) {
+    performConversion();
+  }
+  
   // Function to format MathML with proper indentation (inspired by tex repo)
   function formatMathML(mathml) {
     try {
