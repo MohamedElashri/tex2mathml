@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // Get the textarea elements directly - no CodeMirror needed
+  // Get the textarea elements directly from the HTML
   const latexInput = document.getElementById("latexInput");
   const mathmlOutput = document.getElementById("mathmlOutput");
   

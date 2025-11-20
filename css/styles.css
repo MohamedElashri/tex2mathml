@@ -292,11 +292,6 @@ mjx-container svg {
     padding: 20px;
   }
   
-  .CodeMirror {
-    height: 250px;
-    font-size: 13px;
-  }
-  
   textarea {
     min-height: 250px !important;
   }
@@ -315,11 +310,6 @@ mjx-container svg {
     align-items: flex-start;
     gap: 10px;
   }
-}
-
-/* CodeMirror compatibility - kept for graceful degradation if scripts still load */
-.CodeMirror {
-  display: none !important;
 }
 
 textarea {
@@ -463,15 +453,6 @@ body.light-theme .copy-icon-btn {
     width: 100%;
     min-width: auto;
     max-width: 100%;
-  }
-  
-  .CodeMirror {
-    height: 250px;
-    font-size: 13px;
-  }
-  
-  .CodeMirror-scroll {
-    max-height: 250px;
   }
   
   .math-preview {
