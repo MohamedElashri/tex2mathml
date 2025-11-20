@@ -204,12 +204,17 @@ document.addEventListener("DOMContentLoaded", () => {
     
     // Hide/show appropriate containers
     const outputTextarea = outputEditor.getWrapperElement();
+    const outputWrapper = outputTextarea.closest('.editor-wrapper');
     
     switch(mode) {
       case 'math':
-        // Show rendered math, hide textarea
+        // Show rendered math, hide textarea wrapper
         mathPreview.classList.add('active');
-        outputTextarea.style.display = 'none';
+        if (outputWrapper) {
+          outputWrapper.style.display = 'none';
+        } else {
+          outputTextarea.style.display = 'none';
+        }
         
         // Use Temml to render directly to the preview (like tex repo)
         mathPreview.innerHTML = '';
@@ -231,7 +236,11 @@ document.addEventListener("DOMContentLoaded", () => {
       case 'mathml':
         // Show formatted MathML in textarea
         mathPreview.classList.remove('active');
-        outputTextarea.style.display = 'block';
+        if (outputWrapper) {
+          outputWrapper.style.display = 'block';
+        } else {
+          outputTextarea.style.display = 'block';
+        }
         outputEditor.setValue(formatMathML(currentMathML));
         updateMathMLHighlight();
         break;
@@ -239,7 +248,11 @@ document.addEventListener("DOMContentLoaded", () => {
       case 'flat':
         // Show flat MathML in textarea
         mathPreview.classList.remove('active');
-        outputTextarea.style.display = 'block';
+        if (outputWrapper) {
+          outputWrapper.style.display = 'block';
+        } else {
+          outputTextarea.style.display = 'block';
+        }
         outputEditor.setValue(flattenMathML(currentMathML));
         updateMathMLHighlight();
         break;

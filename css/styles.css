@@ -331,6 +331,7 @@ mjx-container svg {
   caret-color: #e0e0e0;
   resize: none;
   margin: 0;
+  overflow: auto;
 }
 
 body.light-theme .editor-wrapper textarea {
@@ -350,7 +351,7 @@ body.light-theme .editor-wrapper textarea {
   line-height: 1.5;
   white-space: pre-wrap;
   word-wrap: break-word;
-  overflow: auto;
+  overflow: hidden;
   pointer-events: none;
   z-index: 0;
   background-color: #1e1e1e;

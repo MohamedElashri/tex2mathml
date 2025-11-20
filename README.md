@@ -1,2 +1,2 @@
 # tex2mathml
-Web app to provide Latex to MathML conversion service
+Web app to provide `LaTeX` to `MathML` conversion service
