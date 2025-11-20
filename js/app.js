@@ -3,6 +3,80 @@ document.addEventListener("DOMContentLoaded", () => {
   const latexInput = document.getElementById("latexInput");
   const mathmlOutput = document.getElementById("mathmlOutput");
   
+  // Get syntax highlight elements
+  const latexHighlightCode = document.getElementById("latexHighlightCode");
+  const mathmlHighlightCode = document.getElementById("mathmlHighlightCode");
+  
+  // Simple syntax highlighters
+  function highlightLatex(text) {
+    // Escape HTML
+    text = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    
+    // Highlight LaTeX commands (\command)
+    text = text.replace(/\\([a-zA-Z]+)/g, '<span class="latex-command">\\$1</span>');
+    
+    // Highlight brackets and braces
+    text = text.replace(/([{}[\]()])/g, '<span class="latex-bracket">$1</span>');
+    
+    // Highlight subscripts and superscripts
+    text = text.replace(/([_^])/g, '<span class="latex-subscript">$1</span>');
+    
+    return text;
+  }
+  
+  function highlightXML(text) {
+    // Escape HTML first
+    text = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    
+    // Highlight XML tags with attributes
+    text = text.replace(/&lt;([\/]?)(\w+)([^&]*?)&gt;/g, function(match, slash, tagName, attrs) {
+      let result = '<span class="xml-bracket">&lt;</span>';
+      if (slash) result += '<span class="xml-tag">/</span>';
+      result += '<span class="xml-tag-name">' + tagName + '</span>';
+      
+      // Highlight attributes
+      if (attrs) {
+        attrs = attrs.replace(/(\w+)=(&quot;|")([^"&]*)(&quot;|")/g, 
+          '<span class="xml-attribute">$1</span>=<span class="xml-attribute-value">"$3"</span>');
+        result += attrs;
+      }
+      
+      result += '<span class="xml-bracket">&gt;</span>';
+      return result;
+    });
+    
+    return text;
+  }
+  
+  function updateLatexHighlight() {
+    const text = latexInput.value;
+    latexHighlightCode.innerHTML = highlightLatex(text);
+  }
+  
+  function updateMathMLHighlight() {
+    const text = mathmlOutput.value;
+    mathmlHighlightCode.innerHTML = highlightXML(text);
+    
+    // Sync scroll
+    document.getElementById('mathmlHighlight').scrollTop = mathmlOutput.scrollTop;
+    document.getElementById('mathmlHighlight').scrollLeft = mathmlOutput.scrollLeft;
+  }
+  
+  // Update highlights on input
+  latexInput.addEventListener('input', updateLatexHighlight);
+  latexInput.addEventListener('scroll', function() {
+    document.getElementById('latexHighlight').scrollTop = latexInput.scrollTop;
+    document.getElementById('latexHighlight').scrollLeft = latexInput.scrollLeft;
+  });
+  
+  mathmlOutput.addEventListener('scroll', function() {
+    document.getElementById('mathmlHighlight').scrollTop = mathmlOutput.scrollTop;
+    document.getElementById('mathmlHighlight').scrollLeft = mathmlOutput.scrollLeft;
+  });
+  
+  // Initial highlight
+  updateLatexHighlight();
+  
   // Simple editor interface to maintain compatibility
   const editor = {
     getValue: () => latexInput.value,
@@ -159,6 +233,7 @@ document.addEventListener("DOMContentLoaded", () => {
         mathPreview.classList.remove('active');
         outputTextarea.style.display = 'block';
         outputEditor.setValue(formatMathML(currentMathML));
+        updateMathMLHighlight();
         break;
         
       case 'flat':
@@ -166,6 +241,7 @@ document.addEventListener("DOMContentLoaded", () => {
         mathPreview.classList.remove('active');
         outputTextarea.style.display = 'block';
         outputEditor.setValue(flattenMathML(currentMathML));
+        updateMathMLHighlight();
         break;
     }
   }

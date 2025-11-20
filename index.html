@@ -34,9 +34,12 @@
           <div class="input-header">
             <h2>LaTeX</h2>
           </div>
-          <textarea id="latexInput" rows="10" cols="50" placeholder="Enter your LaTeX code here...">\def\d{\mathrm{d}}
+          <div class="editor-wrapper">
+            <pre id="latexHighlight" class="syntax-highlight" aria-hidden="true"><code id="latexHighlightCode"></code></pre>
+            <textarea id="latexInput" rows="10" cols="50" placeholder="Enter your LaTeX code here..." spellcheck="false">\def\d{\mathrm{d}}
 
 \oint_C \vec{B}\circ \d\vec{l} = \mu_0 \left( I_{\text{enc}} + \varepsilon_0 \frac{\d}{\d t} \int_S \vec{E} \circ \hat{n}\; \d a \right)</textarea>
+          </div>
         </section>
 
         <!-- Output section for MathML code -->
@@ -58,7 +61,10 @@
             </div>
           </div>
           <div id="mathPreview" class="math-preview"></div>
-          <textarea id="mathmlOutput" rows="10" cols="50" readonly></textarea>
+          <div class="editor-wrapper">
+            <pre id="mathmlHighlight" class="syntax-highlight" aria-hidden="true"><code id="mathmlHighlightCode"></code></pre>
+            <textarea id="mathmlOutput" rows="10" cols="50" readonly spellcheck="false"></textarea>
+          </div>
         </section>
       </main>
       <footer>&copy; 2025 Mohamed Elashri - LaTeX to MathML Converter</footer>

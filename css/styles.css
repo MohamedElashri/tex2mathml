@@ -312,6 +312,152 @@ mjx-container svg {
   }
 }
 
+/* Editor wrapper for syntax highlighting */
+.editor-wrapper {
+  position: relative;
+  width: 100%;
+  height: 300px;
+}
+
+.editor-wrapper textarea {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background: transparent;
+  color: transparent;
+  caret-color: #e0e0e0;
+  resize: none;
+  margin: 0;
+}
+
+body.light-theme .editor-wrapper textarea {
+  caret-color: #333333;
+}
+
+.syntax-highlight {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 20px;
+  font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow: auto;
+  pointer-events: none;
+  z-index: 0;
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  color: #e0e0e0;
+  border: 1px solid #404040;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  box-sizing: border-box;
+}
+
+body.light-theme .syntax-highlight {
+  background-color: #ffffff;
+  color: #333333;
+  border: 1px solid #d0d0d0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.syntax-highlight code {
+  display: block;
+  padding: 0;
+  margin: 0;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  white-space: inherit;
+  word-wrap: inherit;
+}
+
+/* LaTeX syntax highlighting colors */
+.latex-command {
+  color: #569cd6;
+  font-weight: 600;
+}
+
+.latex-bracket {
+  color: #ffd700;
+  font-weight: bold;
+}
+
+.latex-math {
+  color: #ce9178;
+}
+
+.latex-subscript,
+.latex-superscript {
+  color: #4ec9b0;
+}
+
+body.light-theme .latex-command {
+  color: #0000ff;
+}
+
+body.light-theme .latex-bracket {
+  color: #d4a000;
+}
+
+body.light-theme .latex-math {
+  color: #a31515;
+}
+
+body.light-theme .latex-subscript,
+body.light-theme .latex-superscript {
+  color: #098658;
+}
+
+/* XML/MathML syntax highlighting colors */
+.xml-tag {
+  color: #569cd6;
+}
+
+.xml-tag-name {
+  color: #4ec9b0;
+  font-weight: 600;
+}
+
+.xml-attribute {
+  color: #9cdcfe;
+}
+
+.xml-attribute-value {
+  color: #ce9178;
+}
+
+.xml-bracket {
+  color: #808080;
+}
+
+body.light-theme .xml-tag {
+  color: #800000;
+}
+
+body.light-theme .xml-tag-name {
+  color: #800000;
+}
+
+body.light-theme .xml-attribute {
+  color: #ff0000;
+}
+
+body.light-theme .xml-attribute-value {
+  color: #0000ff;
+}
+
+body.light-theme .xml-bracket {
+  color: #000000;
+}
+
 textarea {
   width: 100%;
   resize: none;
@@ -326,10 +472,32 @@ textarea {
   min-height: 330px;
   transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  box-sizing: border-box;
+}
+
+.editor-wrapper textarea {
+  /* Override for syntax highlighted textareas */
+  background-color: transparent !important;
+  color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 20px !important;
 }
 
 textarea:focus {
   outline: none;
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2), 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.editor-wrapper textarea:focus {
+  /* Show focus on the wrapper instead */
+  outline: none;
+  border: none;
+  box-shadow: none;
+}
+
+.editor-wrapper:focus-within .syntax-highlight {
   border-color: #4CAF50;
   box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2), 0 4px 6px rgba(0, 0, 0, 0.3);
 }
@@ -347,12 +515,23 @@ body.light-theme textarea:focus {
   box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2), 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
+body.light-theme .editor-wrapper:focus-within .syntax-highlight {
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2), 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
 /* Make all input/output boxes exactly the same size */
 #latexInput,
 #mathmlOutput {
   min-height: 300px;
   height: 300px;
   max-height: 300px;
+}
+
+.editor-wrapper {
+  height: 300px !important;
+  min-height: 300px !important;
+  max-height: 300px !important;
 }
 
 .math-preview {
